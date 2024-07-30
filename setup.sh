@@ -8,8 +8,10 @@ sudo apt upgrade -y
 curl -OL https://go.dev/dl/go1.22.4.linux-amd64.tar.gz
 sudo tar -C /usr/local -xvf go1.22.4.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/.local/go/bin
+source ~/.bashrc
 go version
-# Install Python3 and pip
+# Install Python3 and pip@
 sudo apt install -y python3-pip
 # Install Docker
 sudo apt-get update
