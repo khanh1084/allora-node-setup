@@ -191,5 +191,4 @@ volumes:
   head-data:
 EOL
 echo "Setup complete. The 'docker-compose.yml' file has been created with the head-id and wallet seed phrase."
-cd basic-coin-prediction-node/
 sudo docker-compose up -d
