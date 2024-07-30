@@ -87,6 +87,7 @@ services:
       retries: 12
     volumes:
       - ./inference-data:/app/data
+
   updater:
     container_name: updater-basic-eth-pred
     build: .
@@ -107,6 +108,7 @@ services:
         aliases:
           - updater
         ipv4_address: 172.22.0.5
+
   worker:
     container_name: worker-basic-eth-pred
     environment:
@@ -146,8 +148,46 @@ services:
         aliases:
           - worker
         ipv4_address: 172.22.0.10
+
+  head:
+    container_name: head-basic-eth-pred
+    image: alloranetwork/allora-inference-base-head:latest
+    environment:
+      - HOME=/data
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        if [ ! -f /data/keys/priv.bin ]; then
+          echo "Generating new private keys..."
+          mkdir -p /data/keys
+          cd /data/keys
+          allora-keys
+        fi
+        allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
+          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:6000
+    ports:
+      - "6000:6000"
+    volumes:
+      - ./head-data:/data
+    working_dir: /data
+    networks:
+      eth-model-local:
+        aliases:
+          - head
+        ipv4_address: 172.22.0.100
+
 networks:
   eth-model-local:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24
+
+volumes:
+  inference-data:
+  worker-data:
+  head-data:
 EOL
 echo "Setup complete. The 'docker-compose.yml' file has been created with the head-id and wallet seed phrase."
