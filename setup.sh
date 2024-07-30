@@ -28,6 +28,8 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker compose version
 # Install allocmd CLI
 pip install allocmd --upgrade
+export PATH="$PATH:$HOME/.local/bin"
+source ~/.bashrc
 allocmd --version
 # Wallet Setup
 curl -sSL https://raw.githubusercontent.com/allora-network/allora-chain/main/install.sh | bash -s -- v0.0.10
