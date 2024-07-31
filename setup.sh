@@ -89,7 +89,7 @@ services:
       eth-model-local:
         aliases:
           - inference
-        ipv4_address: 172.22.0.4
+        ipv4_address: 172.24.0.4
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
       interval: 10s
@@ -119,7 +119,7 @@ services:
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
-          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --boot-nodes=/ip4/172.24.0.100/tcp/9010/p2p/$head_id \
           --topic=allora-topic-1-worker \
           --allora-chain-key-name=$wallet_name \
           --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
@@ -135,7 +135,7 @@ services:
       eth-model-local:
         aliases:
           - worker-topic-1
-        ipv4_address: 172.22.0.11
+        ipv4_address: 172.24.0.11
 
   worker-topic-3:
     container_name: worker-topic-3
@@ -158,7 +158,7 @@ services:
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9012 \
-          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --boot-nodes=/ip4/172.24.0.100/tcp/9010/p2p/$head_id \
           --topic=allora-topic-3-worker \
           --allora-chain-key-name=$wallet_name \
           --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
@@ -174,7 +174,7 @@ services:
       eth-model-local:
         aliases:
           - worker-topic-3
-        ipv4_address: 172.22.0.12
+        ipv4_address: 172.24.0.12
 
   worker-topic-5:
     container_name: worker-topic-5
@@ -197,7 +197,7 @@ services:
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9013 \
-          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --boot-nodes=/ip4/172.24.0.100/tcp/9010/p2p/$head_id \
           --topic=allora-topic-5-worker \
           --allora-chain-key-name=$wallet_name \
           --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
@@ -213,7 +213,7 @@ services:
       eth-model-local:
         aliases:
           - worker-topic-5
-        ipv4_address: 172.22.0.13
+        ipv4_address: 172.24.0.13
 
   head:
     container_name: head-basic-eth-pred
@@ -242,14 +242,14 @@ services:
       eth-model-local:
         aliases:
           - head
-        ipv4_address: 172.22.0.100
+        ipv4_address: 172.24.0.100
 
 networks:
   eth-model-local:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.22.0.0/24
+        - subnet: 172.24.0.0/24
 
 volumes:
   inference-data:
@@ -297,7 +297,7 @@ services:
       eth-model-local:
         aliases:
           - inference
-        ipv4_address: 172.22.0.4
+        ipv4_address: 172.23.0.4
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
       interval: 10s
@@ -332,7 +332,7 @@ services:
       eth-model-local:
         aliases:
           - head
-        ipv4_address: 172.22.0.100
+        ipv4_address: 172.23.0.100
 
   worker-topic-2:
     container_name: worker-topic-2
@@ -355,7 +355,7 @@ services:
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
-          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --boot-nodes=/ip4/172.23.0.100/tcp/9010/p2p/$head_id \
           --topic=allora-topic-2-worker \
           --allora-chain-key-name=$wallet_name \
           --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
@@ -371,7 +371,7 @@ services:
       eth-model-local:
         aliases:
           - worker-topic-2
-        ipv4_address: 172.22.0.11
+        ipv4_address: 172.23.0.11
 
   worker-topic-4:
     container_name: worker-topic-4
@@ -394,7 +394,7 @@ services:
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9012 \
-          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --boot-nodes=/ip4/172.23.0.100/tcp/9010/p2p/$head_id \
           --topic=allora-topic-4-worker \
           --allora-chain-key-name=$wallet_name \
           --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
@@ -410,7 +410,7 @@ services:
       eth-model-local:
         aliases:
           - worker-topic-4
-        ipv4_address: 172.22.0.12
+        ipv4_address: 172.23.0.12
 
   worker-topic-6:
     container_name: worker-topic-6
@@ -433,7 +433,7 @@ services:
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9013 \
-          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --boot-nodes=/ip4/172.23.0.100/tcp/9010/p2p/$head_id \
           --topic=allora-topic-6-worker \
           --allora-chain-key-name=$wallet_name \
           --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
@@ -449,14 +449,14 @@ services:
       eth-model-local:
         aliases:
           - worker-topic-6
-        ipv4_address: 172.22.0.13
+        ipv4_address: 172.23.0.13
 
 networks:
   eth-model-local:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.22.0.0/24
+        - subnet: 172.23.0.0/24
 
 volumes:
   inference-data:
