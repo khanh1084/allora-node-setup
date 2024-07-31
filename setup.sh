@@ -84,14 +84,14 @@ services:
       context: .
     command: python -u /app/app.py
     ports:
-      - "8000:8000"
+      - "8011:8011"
     networks:
       eth-model-local:
         aliases:
           - inference
         ipv4_address: 172.24.0.4
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
+      test: ["CMD", "curl", "-f", "http://localhost:8011/inference/ETH"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -99,10 +99,10 @@ services:
       - ./inference-data:/app/data
 
   updater:
-    container_name: updater-basic-eth-pred
+    container_name: updater-basic-eth-pred-10m
     build: .
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8011
     command: >
       sh -c "
       while true; do
@@ -117,12 +117,12 @@ services:
       eth-model-local:
         aliases:
           - updater
-        ipv4_address: 172.22.0.5
+        ipv4_address: 172.24.0.5
 
   worker-topic-1:
     container_name: worker-topic-1
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8011
       - HOME=/data
     build:
       context: .
@@ -161,7 +161,7 @@ services:
   worker-topic-3:
     container_name: worker-topic-3
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8011
       - HOME=/data
     build:
       context: .
@@ -200,7 +200,7 @@ services:
   worker-topic-5:
     container_name: worker-topic-5
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8011
       - HOME=/data
     build:
       context: .
@@ -312,14 +312,14 @@ services:
       context: .
     command: python -u /app/app.py
     ports:
-      - "8001:8000"
+      - "8010:8010"
     networks:
       eth-model-local:
         aliases:
           - inference
         ipv4_address: 172.23.0.4
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
+      test: ["CMD", "curl", "-f", "http://localhost:8010/inference/ETH"]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -355,10 +355,10 @@ services:
         ipv4_address: 172.23.0.100
 
   updater:
-    container_name: updater-basic-eth-pred
+    container_name: updater-basic-eth-pred-24h
     build: .
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8010
     command: >
       sh -c "
       while true; do
@@ -373,12 +373,12 @@ services:
       eth-model-local:
         aliases:
           - updater
-        ipv4_address: 172.22.0.5
+        ipv4_address: 172.23.0.5
 
   worker-topic-2:
     container_name: worker-topic-2
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8010
       - HOME=/data
     build:
       context: .
@@ -417,7 +417,7 @@ services:
   worker-topic-4:
     container_name: worker-topic-4
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8010
       - HOME=/data
     build:
       context: .
@@ -456,7 +456,7 @@ services:
   worker-topic-6:
     container_name: worker-topic-6
     environment:
-      - INFERENCE_API_ADDRESS=http://inference:8000
+      - INFERENCE_API_ADDRESS=http://inference:8010
       - HOME=/data
     build:
       context: .
