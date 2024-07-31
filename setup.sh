@@ -98,6 +98,27 @@ services:
     volumes:
       - ./inference-data:/app/data
 
+  updater:
+    container_name: updater-basic-eth-pred
+    build: .
+    environment:
+      - INFERENCE_API_ADDRESS=http://inference:8000
+    command: >
+      sh -c "
+      while true; do
+        python -u /app/update_app.py;
+        sleep 24h;
+      done
+      "
+    depends_on:
+      inference:
+        condition: service_healthy
+    networks:
+      eth-model-local:
+        aliases:
+          - updater
+        ipv4_address: 172.22.0.5
+
   worker-topic-1:
     container_name: worker-topic-1
     environment:
@@ -332,6 +353,27 @@ services:
         aliases:
           - head
         ipv4_address: 172.23.0.100
+
+  updater:
+    container_name: updater-basic-eth-pred
+    build: .
+    environment:
+      - INFERENCE_API_ADDRESS=http://inference:8000
+    command: >
+      sh -c "
+      while true; do
+        python -u /app/update_app.py;
+        sleep 24h;
+      done
+      "
+    depends_on:
+      inference:
+        condition: service_healthy
+    networks:
+      eth-model-local:
+        aliases:
+          - updater
+        ipv4_address: 172.22.0.5
 
   worker-topic-2:
     container_name: worker-topic-2
