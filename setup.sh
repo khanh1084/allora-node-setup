@@ -79,7 +79,7 @@ cat <<EOL > docker-compose.yml
 version: '3'
 services:
   inference:
-    container_name: inference-basic-eth-pred
+    container_name: inference-basic-eth-pred-10m
     build:
       context: .
     command: python -u /app/app.py
@@ -287,7 +287,7 @@ cat <<EOL > docker-compose.yml
 version: '3'
 services:
   inference:
-    container_name: inference-basic-eth-pred
+    container_name: inference-basic-eth-pred-24h
     build:
       context: .
     command: python -u /app/app.py
