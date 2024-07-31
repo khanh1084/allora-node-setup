@@ -292,7 +292,7 @@ services:
       context: .
     command: python -u /app/app.py
     ports:
-      - "8000:8000"
+      - "8001:8000"
     networks:
       eth-model-local:
         aliases:
