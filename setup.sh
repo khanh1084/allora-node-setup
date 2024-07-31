@@ -278,8 +278,7 @@ sudo docker run -it --entrypoint=bash -v $(pwd)/head-data:/data alloranetwork/al
 sudo docker run -it --entrypoint=bash -v $(pwd)/worker-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
 # Read the head-id
 head_id=$(cat head-data/keys/identity)
-# Prompt for wallet seed phrase
-read -p "Enter your wallet seed phrase: " wallet_seed_phrase
+
 
 # Create docker-compose.yml for worker-face-24h
 rm -rf docker-compose.yml
