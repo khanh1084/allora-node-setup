@@ -216,7 +216,7 @@ services:
         ipv4_address: 172.24.0.13
 
   head:
-    container_name: head-basic-eth-pred
+    container_name: head-basic-eth-pred-10m
     image: alloranetwork/allora-inference-base-head:latest
     environment:
       - HOME=/data
@@ -307,7 +307,7 @@ services:
       - ./inference-data:/app/data
 
   head:
-    container_name: head-basic-eth-pred
+    container_name: head-basic-eth-pred-24h
     image: alloranetwork/allora-inference-base-head:latest
     environment:
       - HOME=/data
