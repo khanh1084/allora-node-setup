@@ -50,7 +50,7 @@ fi
 echo "Get faucet tokens from https://faucet.testnet-1.testnet.allora.network/"
 # Clone the basic coin prediction node repository
 cd $HOME
-git clone https://github.com/allora-network/basic-coin-prediction-node
+git clone https://github.com/nhunamit/basic-coin-prediction-node.git
 mv basic-coin-prediction-node worker-face-10m
 cd worker-face-10m
 git checkout worker-face-10m
