@@ -261,3 +261,211 @@ EOL
 
 echo "Setup complete. The 'docker-compose.yml' file has been created with the head-id and wallet seed phrase."
 sudo docker compose up -d
+
+cd $HOME
+git clone https://github.com/nhunamit/basic-coin-prediction-node.git
+mv basic-coin-prediction-node worker-face-24h
+cd worker-face-24h
+git checkout worker-face-24h
+
+# Create directories for worker and head data for worker-face-24h
+mkdir -p worker-topic-2-data worker-topic-4-data worker-topic-6-data head-data worker-data
+chmod 777 worker-topic-2-data worker-topic-4-data worker-topic-6-data head-data worker-data
+
+# Create head keys for worker-face-24h
+sudo docker run -it --entrypoint=bash -v $(pwd)/head-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
+# Create worker keys for worker-face-24h
+sudo docker run -it --entrypoint=bash -v $(pwd)/worker-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
+# Read the head-id
+head_id=$(cat head-data/keys/identity)
+# Prompt for wallet seed phrase
+read -p "Enter your wallet seed phrase: " wallet_seed_phrase
+
+# Create docker-compose.yml for worker-face-24h
+rm -rf docker-compose.yml
+cat <<EOL > docker-compose.yml
+version: '3'
+services:
+  inference:
+    container_name: inference-basic-eth-pred
+    build:
+      context: .
+    command: python -u /app/app.py
+    ports:
+      - "8000:8000"
+    networks:
+      eth-model-local:
+        aliases:
+          - inference
+        ipv4_address: 172.22.0.4
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - ./inference-data:/app/data
+
+  head:
+    container_name: head-basic-eth-pred
+    image: alloranetwork/allora-inference-base-head:latest
+    environment:
+      - HOME=/data
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        if [ ! -f /data/keys/priv.bin ]; then
+          echo "Generating new private keys..."
+          mkdir -p /data/keys
+          cd /data/keys
+          allora-keys
+        fi
+        allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
+          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:6000
+    ports:
+      - "6000:6000"
+    volumes:
+      - ./head-data:/data
+    networks:
+      eth-model-local:
+        aliases:
+          - head
+        ipv4_address: 172.22.0.100
+
+  worker-topic-2:
+    container_name: worker-topic-2
+    environment:
+      - INFERENCE_API_ADDRESS=http://inference:8000
+      - HOME=/data
+    build:
+      context: .
+      dockerfile: Dockerfile_b7s
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        if [ ! -f /data/keys/priv.bin ]; then
+          echo "Generating new private keys..."
+          mkdir -p /data/keys
+          cd /data/keys
+          allora-keys
+        fi
+        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
+          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
+          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --topic=allora-topic-2-worker \
+          --allora-chain-key-name=$wallet_name \
+          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
+          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
+          --allora-chain-topic-id=2
+    volumes:
+      - ./worker-topic-2-data:/data
+    working_dir: /data
+    depends_on:
+      - inference
+      - head
+    networks:
+      eth-model-local:
+        aliases:
+          - worker-topic-2
+        ipv4_address: 172.22.0.11
+
+  worker-topic-4:
+    container_name: worker-topic-4
+    environment:
+      - INFERENCE_API_ADDRESS=http://inference:8000
+      - HOME=/data
+    build:
+      context: .
+      dockerfile: Dockerfile_b7s
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        if [ ! -f /data/keys/priv.bin ]; then
+          echo "Generating new private keys..."
+          mkdir -p /data/keys
+          cd /data/keys
+          allora-keys
+        fi
+        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
+          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9012 \
+          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --topic=allora-topic-4-worker \
+          --allora-chain-key-name=$wallet_name \
+          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
+          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
+          --allora-chain-topic-id=4
+    volumes:
+      - ./worker-topic-4-data:/data
+    working_dir: /data
+    depends_on:
+      - inference
+      - head
+    networks:
+      eth-model-local:
+        aliases:
+          - worker-topic-4
+        ipv4_address: 172.22.0.12
+
+  worker-topic-6:
+    container_name: worker-topic-6
+    environment:
+      - INFERENCE_API_ADDRESS=http://inference:8000
+      - HOME=/data
+    build:
+      context: .
+      dockerfile: Dockerfile_b7s
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        if [ ! -f /data/keys/priv.bin ]; then
+          echo "Generating new private keys..."
+          mkdir -p /data/keys
+          cd /data/keys
+          allora-keys
+        fi
+        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
+          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9013 \
+          --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$head_id \
+          --topic=allora-topic-6-worker \
+          --allora-chain-key-name=$wallet_name \
+          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
+          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
+          --allora-chain-topic-id=6
+    volumes:
+      - ./worker-topic-6-data:/data
+    working_dir: /data
+    depends_on:
+      - inference
+      - head
+    networks:
+      eth-model-local:
+        aliases:
+          - worker-topic-6
+        ipv4_address: 172.22.0.13
+
+networks:
+  eth-model-local:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24
+
+volumes:
+  inference-data:
+  worker-topic-2-data:
+  worker-topic-4-data:
+  worker-topic-6-data:
+  head-data:
+
+EOL
+
+echo "Setup complete. The 'docker-compose.yml' file has been created with the head-id and wallet seed phrase."
+sudo docker compose up -d
