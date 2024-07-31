@@ -61,6 +61,10 @@ mkdir -p worker-topic-3-data
 chmod 777 worker-topic-3-data
 mkdir -p worker-topic-5-data
 chmod 777 worker-topic-5-data
+mkdir -p head-data
+chmod 777 head-data
+mkdir -p worker-data
+chmod 777 worker-data
 # Create head keys
 sudo docker run -it --entrypoint=bash -v $(pwd)/head-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
 # Create worker keys
