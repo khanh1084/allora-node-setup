@@ -53,7 +53,6 @@ cd $HOME
 git clone https://github.com/khanh1084/basic-coin-prediction-node
 mv basic-coin-prediction-node worker-face-10m
 cd worker-face-10m
-git checkout worker-face-10m
 # Create directories for worker and head data
 mkdir -p worker-topic-1-data
 chmod 777 worker-topic-1-data
@@ -287,7 +286,6 @@ cd $HOME
 git clone https://github.com/khanh1084/basic-coin-prediction-node
 mv basic-coin-prediction-node worker-face-24h
 cd worker-face-24h
-git checkout worker-face-24h
 
 # Create directories for worker and head data for worker-face-24h
 mkdir -p worker-topic-2-data worker-topic-4-data worker-topic-6-data head-data worker-data
@@ -515,7 +513,6 @@ cd $HOME
 git clone https://github.com/khanh1084/basic-coin-prediction-node
 mv basic-coin-prediction-node worker-face-24h
 cd worker-face-24h
-git checkout worker-face-24h
 
 # Create directories for worker and head data for worker-face-24h
 mkdir -p worker-topic-7-data worker-topic-8-data worker-topic-9-data head-data worker-data
