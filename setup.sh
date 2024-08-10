@@ -89,11 +89,6 @@ services:
         aliases:
           - inference
         ipv4_address: 172.24.0.4
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8011/inference/ETH"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
     volumes:
       - ./inference-data:/app/data
 
@@ -316,11 +311,6 @@ services:
         aliases:
           - inference
         ipv4_address: 172.23.0.4
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
     volumes:
       - ./inference-data:/app/data
 
@@ -543,11 +533,6 @@ services:
         aliases:
           - inference
         ipv4_address: 172.25.0.4
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8012/inference/ETH"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
     volumes:
       - ./inference-data:/app/data
 
