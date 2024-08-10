@@ -317,7 +317,7 @@ services:
           - inference
         ipv4_address: 172.23.0.4
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8010/inference/ETH"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
       interval: 10s
       timeout: 5s
       retries: 12
