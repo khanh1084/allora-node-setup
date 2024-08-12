@@ -91,6 +91,11 @@ services:
         ipv4_address: 172.24.0.4
     volumes:
       - ./inference-data:/app/data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/inference/ETH']
+      interval: 10s
+      timeout: 5s
+      retries: 12
 
   updater:
     container_name: updater-basic-pred-10m
@@ -313,6 +318,11 @@ services:
         ipv4_address: 172.23.0.4
     volumes:
       - ./inference-data:/app/data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/inference/ETH']
+      interval: 10s
+      timeout: 5s
+      retries: 12
 
   head:
     container_name: head-basic-pred-24h
@@ -535,6 +545,11 @@ services:
         ipv4_address: 172.25.0.4
     volumes:
       - ./inference-data:/app/data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/inference/ETH']
+      interval: 10s
+      timeout: 5s
+      retries: 12
 
   head:
     container_name: head-basic-pred-20m
