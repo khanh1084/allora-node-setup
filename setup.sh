@@ -252,9 +252,9 @@ services:
         fi
         allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:6000
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:8000
     ports:
-      - "6000:6000"
+      - "8000:8000"
     volumes:
       - ./head-data:/data
     working_dir: /data
@@ -341,9 +341,9 @@ services:
         fi
         allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:6000
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:8000
     ports:
-      - "6001:6000"
+      - "6001:8000"
     volumes:
       - ./head-data:/data
     networks:
@@ -568,9 +568,9 @@ services:
         fi
         allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:6000
+          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:8000
     ports:
-      - "6002:6000"
+      - "6002:8000"
     volumes:
       - ./head-data:/data
     networks:
