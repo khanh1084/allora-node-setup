@@ -31,6 +31,8 @@ pip install allocmd --upgrade
 export PATH="$PATH:$HOME/.local/bin"
 source ~/.bashrc
 allocmd --version
+# Install jq
+sudo apt-get install -y jq
 # Wallet Setup
 curl -sSL https://raw.githubusercontent.com/allora-network/allora-chain/main/install.sh | bash -s -- v0.0.10
 export PATH="$PATH:/root/.local/bin"
@@ -109,7 +111,7 @@ EOL
 
 # Build the worker
 bash ./init.config
-docker-compose up -d
+sudo docker compose up -d
 
 cd $HOME
 git clone https://github.com/nhunamit/basic-coin-prediction-node.git
@@ -168,7 +170,7 @@ EOL
 
 # Build the worker
 bash ./init.config
-docker-compose up -d
+sudo docker compose up -d
 
 cd $HOME
 git clone https://github.com/nhunamit/basic-coin-prediction-node.git
@@ -228,4 +230,4 @@ EOL
 
 # Build the worker
 bash ./init.config
-docker-compose up -d
+sudo docker compose up -d
