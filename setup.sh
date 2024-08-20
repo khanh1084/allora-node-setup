@@ -51,9 +51,9 @@ echo "Get faucet tokens from https://faucet.testnet-1.testnet.allora.network/"
 # Clone the basic coin prediction node repository
 cd $HOME
 git clone https://github.com/nhunamit/basic-coin-prediction-node.git
-mv basic-coin-prediction-node worker-face-10m
-cd worker-face-10m
-git checkout worker-face-10m
+mv basic-coin-prediction-node worker-10m
+cd worker-10m
+git checkout worker1-10m
 # Create directories for worker and head data
 mkdir -p worker-topic-1-data
 chmod 777 worker-topic-1-data
@@ -285,9 +285,9 @@ sudo docker compose up -d
 
 cd $HOME
 git clone https://github.com/nhunamit/basic-coin-prediction-node.git
-mv basic-coin-prediction-node worker-10m
-cd worker-10m
-git checkout worker1-10m
+mv basic-coin-prediction-node worker-24h
+cd worker-24h
+git checkout worke2-24h
 
 # Create directories for worker and head data for worker-face-24h
 mkdir -p worker-topic-2-data worker-topic-4-data worker-topic-6-data head-data worker-data
@@ -513,9 +513,9 @@ sudo docker compose up -d
 
 cd $HOME
 git clone https://github.com/khanh1084/basic-coin-prediction-node
-mv basic-coin-prediction-node worker-24h
-cd worker-24h
-git checkout worker2-24h
+mv basic-coin-prediction-node worker-20m
+cd worker-20m
+git checkout worker3-20m
 
 # Create directories for worker and head data for worker-face-24h
 mkdir -p worker-topic-7-data worker-topic-8-data worker-topic-9-data head-data worker-data
