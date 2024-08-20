@@ -54,457 +54,121 @@ git clone https://github.com/nhunamit/basic-coin-prediction-node.git
 mv basic-coin-prediction-node worker-10m
 cd worker-10m
 git checkout worker1-10m
-# Create directories for worker and head data
-mkdir -p worker-topic-1-data
-chmod 777 worker-topic-1-data
-mkdir -p worker-topic-3-data
-chmod 777 worker-topic-3-data
-mkdir -p worker-topic-5-data
-chmod 777 worker-topic-5-data
-mkdir -p head-data
-chmod 777 head-data
-mkdir -p worker-data
-chmod 777 worker-data
-# Create head keys
-sudo docker run -it --entrypoint=bash -v $(pwd)/head-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
-# Create worker keys
-sudo docker run -it --entrypoint=bash -v $(pwd)/worker-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
-# Read the head-id
-head_id=$(cat head-data/keys/identity)
+
 # Prompt for wallet seed phrase
 read -p "Enter your wallet seed phrase: " wallet_seed_phrase
-# Create docker-compose.yml
-rm -rf docker-compose.yml
-cat <<EOL > docker-compose.yml
-version: '3'
-services:
-  inference:
-    container_name: inference-basic-pred-10m
-    build:
-      context: .
-    command: python -u /app/app.py
-    ports:
-      - "8011:8011"
-    networks:
-      eth-model-local:
-        aliases:
-          - inference
-        ipv4_address: 172.24.0.4
-    volumes:
-      - ./inference-data:/app/data
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8000/inference/ETH']
-      interval: 10s
-      timeout: 5s
-      retries: 12
 
-  updater:
-    container_name: updater-basic-pred-10m
-    build: .
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8011
-    command: >
-      sh -c "
-      while true; do
-        python -u /app/update_app.py;
-        sleep 24h;
-      done
-      "
-    depends_on:
-      inference:
-        condition: service_healthy
-    networks:
-      eth-model-local:
-        aliases:
-          - updater
-        ipv4_address: 172.24.0.5
+# Xóa file config.json hiện tại
+rm -f config.json
 
-  worker-topic-1:
-    container_name: worker-topic-1
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8011
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
-          --boot-nodes=/ip4/172.24.0.100/tcp/9010/p2p/$head_id \
-          --topic=allora-topic-1-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=1
-    volumes:
-      - ./worker-topic-1-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-1
-        ipv4_address: 172.24.0.11
-
-  worker-topic-3:
-    container_name: worker-topic-3
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8011
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9012 \
-          --boot-nodes=/ip4/172.24.0.100/tcp/9010/p2p/$head_id \
-          --topic=allora-topic-3-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=3
-    volumes:
-      - ./worker-topic-3-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-3
-        ipv4_address: 172.24.0.12
-
-  worker-topic-5:
-    container_name: worker-topic-5
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8011
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9013 \
-          --boot-nodes=/ip4/172.24.0.100/tcp/9010/p2p/$head_id \
-          --topic=allora-topic-5-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=5
-    volumes:
-      - ./worker-topic-5-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-5
-        ipv4_address: 172.24.0.13
-
-  head:
-    container_name: head-basic-pred-10m
-    image: alloranetwork/allora-inference-base-head:latest
-    environment:
-      - HOME=/data
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:8000
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./head-data:/data
-    working_dir: /data
-    networks:
-      eth-model-local:
-        aliases:
-          - head
-        ipv4_address: 172.24.0.100
-
-networks:
-  eth-model-local:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.24.0.0/24
-
-volumes:
-  inference-data:
-  worker-topic-1-data:
-  worker-topic-3-data:
-  worker-topic-5-data:
-  head-data:
+# Tạo file config.json mới
+cat <<EOL > config.json
+{
+    "wallet": {
+        "addressKeyName": "test",
+        "addressRestoreMnemonic": "$wallet_seed_phrase",
+        "alloraHomeDir": "",
+        "gas": "1000000",
+        "gasAdjustment": 1.0,
+        "nodeRpc": "https://allora-rpc.testnet-1.testnet.allora.network",
+        "maxRetries": 2,
+        "delay": 1,
+        "submitTx": false
+    },
+    "worker": [
+        {
+            "topicId": 2,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 4,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "Token": "BTC"
+            }
+        },
+        {
+            "topicId": 6,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "Token": "SOL"
+            }
+        }
+    ]
+}
 EOL
 
-echo "Setup complete. The 'docker-compose.yml' file has been created with the head-id and wallet seed phrase."
-sudo docker compose up -d
+# Build the worker
+bash ./init.config
+docker-compose up -d
 
 cd $HOME
 git clone https://github.com/nhunamit/basic-coin-prediction-node.git
 mv basic-coin-prediction-node worker-24h
 cd worker-24h
-git checkout worke2-24h
+git checkout worker2-24h
 
-# Create directories for worker and head data for worker-face-24h
-mkdir -p worker-topic-2-data worker-topic-4-data worker-topic-6-data head-data worker-data
-chmod 777 worker-topic-2-data worker-topic-4-data worker-topic-6-data head-data worker-data
+# Xóa file config.json hiện tại
+rm -f config.json
 
-# Create head keys for worker-face-24h
-sudo docker run -it --entrypoint=bash -v $(pwd)/head-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
-# Create worker keys for worker-face-24h
-sudo docker run -it --entrypoint=bash -v $(pwd)/worker-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
-# Read the head-id
-head_id=$(cat head-data/keys/identity)
-
-
-# Create docker-compose.yml for worker-face-24h
-rm -rf docker-compose.yml
-cat <<EOL > docker-compose.yml
-version: '3'
-services:
-  inference:
-    container_name: inference-basic-pred-24h
-    build:
-      context: .
-    command: python -u /app/app.py
-    ports:
-      - "8010:8010"
-    networks:
-      eth-model-local:
-        aliases:
-          - inference
-        ipv4_address: 172.23.0.4
-    volumes:
-      - ./inference-data:/app/data
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8000/inference/ETH']
-      interval: 10s
-      timeout: 5s
-      retries: 12
-
-  head:
-    container_name: head-basic-pred-24h
-    image: alloranetwork/allora-inference-base-head:latest
-    environment:
-      - HOME=/data
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:8000
-    ports:
-      - "6001:8000"
-    volumes:
-      - ./head-data:/data
-    networks:
-      eth-model-local:
-        aliases:
-          - head
-        ipv4_address: 172.23.0.100
-
-  updater:
-    container_name: updater-basic-pred-24h
-    build: .
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8010
-    command: >
-      sh -c "
-      while true; do
-        python -u /app/update_app.py;
-        sleep 24h;
-      done
-      "
-    depends_on:
-      inference:
-        condition: service_healthy
-    networks:
-      eth-model-local:
-        aliases:
-          - updater
-        ipv4_address: 172.23.0.5
-
-  worker-topic-2:
-    container_name: worker-topic-2
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8010
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
-          --boot-nodes=/ip4/172.23.0.100/tcp/9010/p2p/$head_id \
-          --topic=allora-topic-2-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=2
-    volumes:
-      - ./worker-topic-2-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-2
-        ipv4_address: 172.23.0.11
-
-  worker-topic-4:
-    container_name: worker-topic-4
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8010
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9012 \
-          --boot-nodes=/ip4/172.23.0.100/tcp/9010/p2p/$head_id \
-          --topic=allora-topic-4-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=4
-    volumes:
-      - ./worker-topic-4-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-4
-        ipv4_address: 172.23.0.12
-
-  worker-topic-6:
-    container_name: worker-topic-6
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8010
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9013 \
-          --boot-nodes=/ip4/172.23.0.100/tcp/9010/p2p/$head_id \
-          --topic=allora-topic-6-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=6
-    volumes:
-      - ./worker-topic-6-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-6
-        ipv4_address: 172.23.0.13
-
-networks:
-  eth-model-local:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.23.0.0/24
-
-volumes:
-  inference-data:
-  worker-topic-2-data:
-  worker-topic-4-data:
-  worker-topic-6-data:
-  head-data:
-
+# Tạo file config.json mới
+cat <<EOL > config.json
+{
+    "wallet": {
+        "addressKeyName": "test",
+        "addressRestoreMnemonic": "$wallet_seed_phrase",
+        "alloraHomeDir": "",
+        "gas": "1000000",
+        "gasAdjustment": 1.0,
+        "nodeRpc": "https://allora-rpc.testnet-1.testnet.allora.network",
+        "maxRetries": 2,
+        "delay": 1,
+        "submitTx": false
+    },
+    "worker": [
+        {
+            "topicId": 2,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 4,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "Token": "BTC"
+            }
+        },
+        {
+            "topicId": 6,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "Token": "SOL"
+            }
+        }
+    ]
+}
 EOL
 
-echo "Setup complete. The 'docker-compose.yml' file has been created with the head-id and wallet seed phrase."
-sudo docker compose up -d
-
+# Build the worker
+bash ./init.config
+docker-compose up -d
 
 cd $HOME
 git clone https://github.com/nhunamit/basic-coin-prediction-node.git
@@ -512,196 +176,56 @@ mv basic-coin-prediction-node worker-20m
 cd worker-20m
 git checkout worker3-20m
 
+# Xóa file config.json hiện tại
+rm -f config.json
 
-
-mkdir -p worker-topic-7-data worker-topic-8-data worker-topic-9-data head-data worker-data
-chmod 777 worker-topic-7-data worker-topic-8-data worker-topic-9-data head-data worker-data
-
-# Create head keys for new topics
-sudo docker run -it --entrypoint=bash -v $(pwd)/head-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
-
-# Create worker keys for new topics
-sudo docker run -it --entrypoint=bash -v $(pwd)/worker-data:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"
-
-# Read the head-id
-head_id=$(cat head-data/keys/identity)
-
-# Create docker-compose.yml for new topics
-rm -rf docker-compose.yml
-cat <<EOL > docker-compose.yml
-version: '3'
-services:
-  inference:
-    container_name: inference-basic-eth-pred-20m
-    build:
-      context: .
-    command: python -u /app/app.py
-    ports:
-      - "8020:8020"
-    networks:
-      eth-model-local:
-        aliases:
-          - inference
-        ipv4_address: 172.25.0.4
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8020/inference/ETH"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
-    volumes:
-      - ./inference-data:/app/data
-  head:
-    container_name: head-basic-eth-pred-20m
-    image: alloranetwork/allora-inference-base-head:latest
-    environment:
-      - HOME=/data
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9020 --rest-api=:6020
-    ports:
-      - "6020:6020"
-    volumes:
-      - ./head-data:/data
-    working_dir: /data
-    networks:
-      eth-model-local:
-        aliases:
-          - head
-        ipv4_address: 172.25.0.100
-  worker-topic-7:
-    container_name: worker-topic-7
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8020
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9021 \
-          --boot-nodes=/ip4/172.25.0.100/tcp/9020/p2p/$head_id \
-          --topic=allora-topic-7-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=7
-    volumes:
-      - ./worker-topic-7-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-7
-        ipv4_address: 172.25.0.11
-  worker-topic-8:
-    container_name: worker-topic-8
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8020
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9022 \
-          --boot-nodes=/ip4/172.25.0.100/tcp/9020/p2p/$head_id \
-          --topic=allora-topic-8-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=8
-    volumes:
-      - ./worker-topic-8-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-8
-        ipv4_address: 172.25.0.12
-  worker-topic-9:
-    container_name: worker-topic-9
-    environment:
-      - INFERENCE_API_ADDRESS=http://inference:8020
-      - HOME=/data
-    build:
-      context: .
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        if [ ! -f /data/keys/priv.bin ]; then
-          echo "Generating new private keys..."
-          mkdir -p /data/keys
-          cd /data/keys
-          allora-keys
-        fi
-        allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
-          --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
-          --private-key=/data/keys/priv.bin --log-level=debug --port=9023 \
-          --boot-nodes=/ip4/172.25.0.100/tcp/9020/p2p/$head_id \
-          --topic=allora-topic-9-worker \
-          --allora-chain-key-name=$wallet_name \
-          --allora-chain-restore-mnemonic='$wallet_seed_phrase' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
-          --allora-chain-topic-id=9
-    volumes:
-      - ./worker-topic-9-data:/data
-    working_dir: /data
-    depends_on:
-      - inference
-      - head
-    networks:
-      eth-model-local:
-        aliases:
-          - worker-topic-9
-        ipv4_address: 172.25.0.13
-networks:
-  eth-model-local:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.25.0.0/24
-volumes:
-  inference-data:
-  worker-topic-7-data:
-  worker-topic-8-data:
-  worker-topic-9-data:
-  head-data:
+# Tạo file config.json mới
+cat <<EOL > config.json
+{
+    "wallet": {
+        "addressKeyName": "test",
+        "addressRestoreMnemonic": "$wallet_seed_phrase",
+        "alloraHomeDir": "",
+        "gas": "1000000",
+        "gasAdjustment": 1.0,
+        "nodeRpc": "https://allora-rpc.testnet-1.testnet.allora.network",
+        "maxRetries": 2,
+        "delay": 1,
+        "submitTx": false
+    },
+    "worker": [
+        {
+            "topicId": 7,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8013/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 8,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8013/inference/{Token}",
+                "Token": "BNB"
+            }
+        },
+        {
+            "topicId": 9,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8013/inference/{Token}",
+                "Token": "ARB"
+            }
+        }
+    ]
+} 
 EOL
 
-echo "Setup complete. The 'docker-compose.yml' file has been created with the head-id and wallet seed phrase."
-sudo docker compose up -d
+
+# Build the worker
+bash ./init.config
+docker-compose up -d
