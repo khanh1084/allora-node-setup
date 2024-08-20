@@ -126,7 +126,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -165,7 +164,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -204,7 +202,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -382,7 +379,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -421,7 +417,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -460,7 +455,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -591,7 +585,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -629,7 +622,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -667,7 +659,6 @@ services:
       - HOME=/data
     build:
       context: .
-      dockerfile: Dockerfile_b7s
     entrypoint:
       - "/bin/bash"
       - "-c"
