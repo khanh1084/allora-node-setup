@@ -111,7 +111,10 @@ cat <<EOL > config.json
 EOL
 
 # Build the worker
-source ./init.config
+if ! source ./init.config; then
+    echo "Error occurred while sourcing init.config"
+    exit 1
+fi
 sudo docker compose up -d
 
 cd $HOME
@@ -170,7 +173,10 @@ cat <<EOL > config.json
 EOL
 
 # Build the worker
-source ./init.config
+if ! source ./init.config; then
+    echo "Error occurred while sourcing init.config"
+    exit 1
+fi
 sudo docker compose up -d
 
 cd $HOME
@@ -230,5 +236,8 @@ EOL
 
 
 # Build the worker
-source ./init.config
+if ! source ./init.config; then
+    echo "Error occurred while sourcing init.config"
+    exit 1
+fi
 sudo docker compose up -d
