@@ -148,6 +148,7 @@ if [ -n "$mnemonic" ]; then
     echo "NAME=$nodeName" >> ./worker-data/env_file
     echo "ENV_LOADED=true" >> ./worker-data/env_file
     echo "wallet mnemonic already provided by you, loading config.json . Please proceed to run docker compose"
+    exit 0
 fi
 
 # Ensure the worker-data directory exists
@@ -256,6 +257,7 @@ if [ -n "$mnemonic" ]; then
     echo "NAME=$nodeName" >> ./worker-data/env_file
     echo "ENV_LOADED=true" >> ./worker-data/env_file
     echo "wallet mnemonic already provided by you, loading config.json . Please proceed to run docker compose"
+    exit 0
 fi
 
 # Ensure the worker-data directory exists
@@ -365,6 +367,7 @@ if [ -n "$mnemonic" ]; then
     echo "NAME=$nodeName" >> ./worker-data/env_file
     echo "ENV_LOADED=true" >> ./worker-data/env_file
     echo "wallet mnemonic already provided by you, loading config.json . Please proceed to run docker compose"
+    exit 0
 fi
 
 # Ensure the worker-data directory exists
