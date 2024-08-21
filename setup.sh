@@ -88,29 +88,29 @@ cat <<EOL > config.json
     },
     "worker": [
         {
-            "topicId": 2,
+            "topicId": 1,
             "inferenceEntrypointName": "api-worker-reputer",
             "loopSeconds": 5,
             "parameters": {
-                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "InferenceEndpoint": "http://inference:8011/inference/{Token}",
                 "Token": "ETH"
             }
         },
         {
-            "topicId": 4,
+            "topicId": 3,
             "inferenceEntrypointName": "api-worker-reputer",
             "loopSeconds": 5,
             "parameters": {
-                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "InferenceEndpoint": "http://inference:8011/inference/{Token}",
                 "Token": "BTC"
             }
         },
         {
-            "topicId": 6,
+            "topicId": 5,
             "inferenceEntrypointName": "api-worker-reputer",
             "loopSeconds": 5,
             "parameters": {
-                "InferenceEndpoint": "http://inference:8012/inference/{Token}",
+                "InferenceEndpoint": "http://inference:8011/inference/{Token}",
                 "Token": "SOL"
             }
         }
