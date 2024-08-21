@@ -111,7 +111,7 @@ cat <<EOL > config.json
 EOL
 
 # Build the worker
-./init.config
+source ./init.config
 sudo docker compose up -d
 
 cd $HOME
@@ -170,7 +170,7 @@ cat <<EOL > config.json
 EOL
 
 # Build the worker
-./init.config
+source ./init.config
 sudo docker compose up -d
 
 cd $HOME
@@ -230,5 +230,5 @@ EOL
 
 
 # Build the worker
-./init.config
+source ./init.config
 sudo docker compose up -d
