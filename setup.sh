@@ -70,7 +70,7 @@ git checkout worker1-10m
 read -p "Enter your wallet seed phrase: " wallet_seed_phrase
 
 # Xóa file config.json hiện tại
-rm -f config.json
+sudo rm -f config.json
 
 # Tạo file config.json mới
 cat <<EOL > config.json
@@ -120,7 +120,7 @@ EOL
 
 # Build the worker
 # Remove the existing init.config file
-rm -f ./init.config
+sudo rm -f ./init.config
 
 # Create a new init.config file
 cat <<EOL > ./init.config
@@ -178,7 +178,7 @@ cd worker-24h
 git checkout worker2-24h
 
 # Xóa file config.json hiện tại
-rm -f config.json
+sudo rm -f config.json
 
 # Tạo file config.json mới
 cat <<EOL > config.json
@@ -228,7 +228,7 @@ EOL
 
 # Build the worker
 # Remove the existing init.config file
-rm -f ./init.config
+sudo rm -f ./init.config
 
 # Create a new init.config file
 cat <<EOL > ./init.config
@@ -286,7 +286,7 @@ cd worker-20m
 git checkout worker3-20m
 
 # Xóa file config.json hiện tại
-rm -f config.json
+sudo rm -f config.json
 
 # Tạo file config.json mới
 cat <<EOL > config.json
@@ -337,7 +337,7 @@ EOL
 
 # Build the worker
 # Remove the existing init.config file
-rm -f ./init.config
+sudo rm -f ./init.config
 
 # Create a new init.config file
 cat <<EOL > ./init.config
