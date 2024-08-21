@@ -134,7 +134,6 @@ if [ ! -f config.json ]; then
 fi
 
 nodeName=\$(jq -r '.wallet.addressKeyName' config.json)
-echo "nodeName: \$nodeName"
 if [ -z "\$nodeName" ]; then
     echo "No wallet name provided for the node, please provide your preferred wallet name. config.json >> wallet.addressKeyName"
     exit 1
@@ -148,7 +147,6 @@ if [ -n "\$mnemonic" ]; then
     echo "NAME=\$nodeName" >> ./worker-data/env_file
     echo "ENV_LOADED=true" >> ./worker-data/env_file
     echo "wallet mnemonic already provided by you, loading config.json . Please proceed to run docker compose"
-    exit 0
 fi
 
 # Ensure the worker-data directory exists
@@ -241,7 +239,6 @@ if [ ! -f config.json ]; then
 fi
 
 nodeName=\$(jq -r '.wallet.addressKeyName' config.json)
-echo "nodeName: \$nodeName"
 if [ -z "\$nodeName" ]; then
     echo "No wallet name provided for the node, please provide your preferred wallet name. config.json >> wallet.addressKeyName"
     exit 1
@@ -255,7 +252,6 @@ if [ -n "\$mnemonic" ]; then
     echo "NAME=\$nodeName" >> ./worker-data/env_file
     echo "ENV_LOADED=true" >> ./worker-data/env_file
     echo "wallet mnemonic already provided by you, loading config.json . Please proceed to run docker compose"
-    exit 0
 fi
 
 # Ensure the worker-data directory exists
@@ -349,7 +345,6 @@ if [ ! -f config.json ]; then
 fi
 
 nodeName=\$(jq -r '.wallet.addressKeyName' config.json)
-echo "nodeName: \$nodeName"
 if [ -z "\$nodeName" ]; then
     echo "No wallet name provided for the node, please provide your preferred wallet name. config.json >> wallet.addressKeyName"
     exit 1
@@ -363,7 +358,6 @@ if [ -n "\$mnemonic" ]; then
     echo "NAME=\$nodeName" >> ./worker-data/env_file
     echo "ENV_LOADED=true" >> ./worker-data/env_file
     echo "wallet mnemonic already provided by you, loading config.json . Please proceed to run docker compose"
-    exit 0
 fi
 
 # Ensure the worker-data directory exists
