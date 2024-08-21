@@ -159,6 +159,7 @@ else
     echo "config.json is already loaded, skipping the operation. You can set ENV_LOADED variable to false in ./worker-data/env_file to reload the config.json"
 fi	
 EOL
+chmod +x ./init.config
 ./init.config
 sudo docker compose up -d
 
@@ -266,6 +267,7 @@ else
     echo "config.json is already loaded, skipping the operation. You can set ENV_LOADED variable to false in ./worker-data/env_file to reload the config.json"
 fi	
 EOL
+chmod +x ./init.config
 ./init.config
 sudo docker compose up -d
 
@@ -374,5 +376,6 @@ else
     echo "config.json is already loaded, skipping the operation. You can set ENV_LOADED variable to false in ./worker-data/env_file to reload the config.json"
 fi	
 EOL
+chmod +x ./init.config
 ./init.config
 sudo docker compose up -d
