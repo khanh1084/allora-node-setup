@@ -55,6 +55,8 @@ else
   read -p "Enter your wallet name: " wallet_name
   allorad keys add $wallet_name
 fi
+export wallet_name
+echo "Wallet name set to: $wallet_name"
 # Get faucet tokens
 echo "Get faucet tokens from https://faucet.testnet-1.testnet.allora.network/"
 # Clone the basic coin prediction node repository
