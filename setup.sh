@@ -134,6 +134,7 @@ if [ ! -f config.json ]; then
 fi
 
 nodeName=$(jq -r '.wallet.addressKeyName' config.json)
+echo "nodeName: $nodeName"
 if [ -z "$nodeName" ]; then
     echo "No wallet name provided for the node, please provide your preferred wallet name. config.json >> wallet.addressKeyName"
     exit 1
@@ -243,6 +244,7 @@ if [ ! -f config.json ]; then
 fi
 
 nodeName=$(jq -r '.wallet.addressKeyName' config.json)
+echo "nodeName: $nodeName"
 if [ -z "$nodeName" ]; then
     echo "No wallet name provided for the node, please provide your preferred wallet name. config.json >> wallet.addressKeyName"
     exit 1
@@ -353,6 +355,7 @@ if [ ! -f config.json ]; then
 fi
 
 nodeName=$(jq -r '.wallet.addressKeyName' config.json)
+echo $nodeName
 if [ -z "$nodeName" ]; then
     echo "No wallet name provided for the node, please provide your preferred wallet name. config.json >> wallet.addressKeyName"
     exit 1
