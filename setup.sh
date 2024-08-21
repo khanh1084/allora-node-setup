@@ -35,9 +35,15 @@ allocmd --version
 # Install jq
 sudo apt-get install -y jq
 # Wallet Setup
-curl -sSL https://raw.githubusercontent.com/allora-network/allora-chain/main/install.sh | bash -s -- v0.0.10
-export PATH="$PATH:/root/.local/bin"
-git clone -b v0.0.10 https://github.com/allora-network/allora-chain.git
+if [ ! -d "allora-chain" ]; then
+    echo "allora-chain folder not found. Downloading..."
+    curl -sSL https://raw.githubusercontent.com/allora-network/allora-chain/main/install.sh | bash -s -- v0.0.10
+    export PATH="$PATH:/root/.local/bin"
+    git clone -b v0.0.10 https://github.com/allora-network/allora-chain.git
+else
+    echo "allora-chain folder already exists. Skipping download."
+fi
+
 cd allora-chain && make all
 allorad version
 # Recover or create a new wallet
