@@ -1,6 +1,7 @@
 #!/bin/bash
 # Exit immediately if a command exits with a non-zero status
 set -e
+export DEBIAN_FRONTEND=noninteractive
 # Update and upgrade the system
 sudo apt update
 sudo apt upgrade -y
