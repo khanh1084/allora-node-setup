@@ -160,7 +160,7 @@ else
 fi	
 EOL
 chmod +x ./init.config
-./init.config
+source ./init.config
 sudo docker compose up -d
 
 cd $HOME
@@ -268,7 +268,7 @@ else
 fi	
 EOL
 chmod +x ./init.config
-./init.config
+source ./init.config
 sudo docker compose up -d
 
 cd $HOME
@@ -377,5 +377,5 @@ else
 fi	
 EOL
 chmod +x ./init.config
-./init.config
+source ./init.config
 sudo docker compose up -d
