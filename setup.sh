@@ -68,7 +68,7 @@ rm -f config.json
 cat <<EOL > config.json
 {
     "wallet": {
-        "addressKeyName": "test",
+        "addressKeyName": "$wallet_name",
         "addressRestoreMnemonic": "$wallet_seed_phrase",
         "alloraHomeDir": "",
         "gas": "1000000",
@@ -176,7 +176,7 @@ rm -f config.json
 cat <<EOL > config.json
 {
     "wallet": {
-        "addressKeyName": "test",
+        "addressKeyName": "$wallet_name",
         "addressRestoreMnemonic": "$wallet_seed_phrase",
         "alloraHomeDir": "",
         "gas": "1000000",
@@ -284,7 +284,7 @@ rm -f config.json
 cat <<EOL > config.json
 {
     "wallet": {
-        "addressKeyName": "test",
+        "addressKeyName": "$wallet_name",
         "addressRestoreMnemonic": "$wallet_seed_phrase",
         "alloraHomeDir": "",
         "gas": "1000000",
